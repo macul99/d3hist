@@ -21,16 +21,16 @@ var parseDate = d3.timeParse("%d-%m-%Y");
 
 // set the ranges
 var x = d3.scaleTime()
-          .domain([new Date(2010, 6, 3), new Date(2012, 0, 1)])
-          .rangeRound([0, width]);
+          .domain([new Date(2010, 6, 3), new Date(2012, 0, 1)]) // date is chosen to make graph look good through some experiment
+          .rangeRound([0, width]);  // get x range to round itself to logical values
 var y = d3.scaleLinear()
           .range([height, 0]);
 
 // set the parameters for the histogram
 var histogram = d3.histogram()
-    .value(function(d) { return d.date; })
-    .domain(x.domain())
-    .thresholds(x.ticks(d3.timeMonth));
+    .value(function(d) { return d.date; }) // set the value going to bin
+    .domain(x.domain()) // same as the domain of x axis defined earlier
+    .thresholds(x.ticks(d3.timeMonth)); // set the threshold used for binning
 
 // append the svg object to the body of the page
 // append a 'group' element to 'svg'
@@ -52,7 +52,7 @@ d3.csv("earthquakes.csv", function(error, data) {
   });
 
   // group the data for the bars
-  var bins = histogram(data);
+  var bins = histogram(data); // transform data to bins, bins will be used for plot rect for histgram
 
   // Scale the range of the data in the y domain
   y.domain([0, d3.max(bins, function(d) { return d.length; })]);
@@ -62,7 +62,7 @@ d3.csv("earthquakes.csv", function(error, data) {
       .data(bins)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", 1)
+      .attr("x", 1) // offset all the bars by 1 to make sure that we have a nice symmetrical set of bars with a thin separation
       .attr("transform", function(d) {
 		  return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
       .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
